@@ -4,25 +4,20 @@ const Character = require('../models/Character');
 const express = require('express');
 const index = express.Router();
 
-const cords = [];
-
 index.get(
   '/characters',
   asyncHandler(async (req, res) => {
     const characters = await Character.find({}).sort({ name: -1 });
 
-    if (!characters)
+    if (!characters || characters.length === 0)
       return res.status(404).json({ error: 'Characters not found' });
 
-    res.json({ characters });
+    res.status(200).json({ characters: characters });
   })
 );
 
 index.get('/coords', (req, res) => res.json({ cords }));
 
-index.post('/validate', (req, res) => {
-  cords.push(req.body.item);
-  res.send('Success');
-});
+index.post('/validate', (req, res) => {});
 
 module.exports = index;
