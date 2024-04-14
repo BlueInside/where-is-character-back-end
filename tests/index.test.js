@@ -1,4 +1,4 @@
-const index = require('../routes/index');
+const index = require('./index');
 
 const request = require('supertest');
 const express = require('express');
@@ -8,22 +8,33 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', index);
 
-test('index route works', (done) => {
+test('route /characters return json with characters', (done) => {
   request(app)
-    .get('/')
+    .get('/characters')
+    .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
-    .expect({ character: 'Karol' })
-    .expect(200, done);
+    .expect(200)
+    .then((res) => {
+      expect(res.body.characters).toHaveLength(3);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
 });
 
-test('testing route works', (done) => {
+test('POST /validate', (done) => {
   request(app)
     .post('/validate')
-    .type('form')
-    .send({ item: 'hey' })
-    .then(() => {
-      request(app)
-        .get('/coords')
-        .expect({ cords: ['hey'] }, done);
+    .send({ name: 'test1', xCoordinate: 100, yCoordinate: 200 })
+    .set('Accept', 'application/json')
+    .expect('Content-Type', /json/)
+    .expect(200)
+    .then((res) => {
+      expect(res.body.message).toBeDefined();
+      done();
+    })
+    .catch((err) => {
+      done(err);
     });
 });
