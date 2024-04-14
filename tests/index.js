@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 
 const express = require('express');
 const index = express.Router();
+const validateCoords = require('../utils/validateCoordinates');
 
 const mockCharacters = [
   {
@@ -20,20 +21,6 @@ const mockCharacters = [
     yCoordinate: { min: 100, max: 200 },
   },
 ];
-
-function validateCoords(x, y, character) {
-  let isXCorrect = false;
-  let isYCorrect = false;
-  // Checks if x position is within range
-  if (x >= character.xCoordinate.min && x <= character.xCoordinate.max)
-    isXCorrect = true;
-  // Checks if y position is within range
-  if (y >= character.yCoordinate.min && y <= character.yCoordinate.max)
-    isYCorrect = true;
-  // Return true if both coords are within range
-  console.log(isXCorrect, isYCorrect);
-  return isXCorrect && isYCorrect;
-}
 
 index.get(
   '/characters',
