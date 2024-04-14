@@ -10,7 +10,7 @@
     "supertest": "^6.3.4"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "server": "nodemon app.js"
   }
 }
