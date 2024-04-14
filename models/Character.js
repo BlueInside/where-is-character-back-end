@@ -11,6 +11,7 @@ const coordinateSchema = new Schema(
 
 const characterSchema = new Schema({
   name: { type: String, required: true },
+  image: { type: String, required: true },
   xCoordinate: coordinateSchema,
   yCoordinate: coordinateSchema,
 });
