@@ -4,6 +4,8 @@ const Character = require('../models/Character');
 const express = require('express');
 const index = express.Router();
 
+const validateCoords = require('../utils/validateCoordinates');
+
 index.get(
   '/characters',
   asyncHandler(async (req, res) => {
@@ -16,8 +18,36 @@ index.get(
   })
 );
 
-index.get('/coords', (req, res) => res.json({ cords }));
+index.post(
+  '/validate',
+  asyncHandler(async (req, res) => {
+    // Destruct payload
+    const { name, xCoordinate, yCoordinate } = req.body;
 
-index.post('/validate', (req, res) => {});
+    // Checks if all fields were sent
+    if (!name || !xCoordinate || !yCoordinate) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Find character in DB based on that name
+    const character = await Character.findOne({ name: name });
+
+    console.log(character);
+    if (!character || character.length === 0)
+      return res.status(404).json({ error: 'Character not found' });
+
+    // Check if coords are right
+    const correctMatch = validateCoords(xCoordinate, yCoordinate, character);
+
+    if (!correctMatch)
+      return res
+        .status(200)
+        .json({ message: `Sorry that's not quite ${character.name}` });
+
+    return res
+      .status(200)
+      .json({ message: `That's right thats ${character.name}` });
+  })
+);
 
 module.exports = index;
