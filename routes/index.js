@@ -10,7 +10,7 @@ index.get('/', (req, res) => {
 index.get('/coords', (req, res) => res.json({ cords }));
 
 index.post('/validate', (req, res) => {
-  arrayBuffer.push(req.body.item);
+  cords.push(req.body.item);
   res.send('Success');
 });
 
