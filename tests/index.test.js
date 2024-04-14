@@ -7,6 +7,14 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', index);
 
+beforeEach(() => {
+  userCharacterSelection = {
+    name: 'Bugs',
+    xCoordinate: 100,
+    yCoordinate: 200,
+  };
+});
+
 describe('GET /Characters', () => {
   test('route /characters return json with characters', (done) => {
     request(app)
@@ -25,7 +33,7 @@ describe('GET /Characters', () => {
 });
 
 describe('POST /validate', () => {
-  const userCharacterSelection = {
+  let userCharacterSelection = {
     name: 'Bugs',
     xCoordinate: 100,
     yCoordinate: 200,
@@ -39,6 +47,43 @@ describe('POST /validate', () => {
       .then((res) => {
         expect(res.body.message).toMatch(
           `That's right thats ${userCharacterSelection.name}`
+        );
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test('should return error when payload is not correct', (done) => {
+    userCharacterSelection = { name: 'Wrong name' };
+    request(app)
+      .post('/validate')
+      .type('form')
+      .send(userCharacterSelection)
+      .then((res) => {
+        expect(res.body.message).toBeUndefined();
+        expect(res.body.error).toMatch(/Missing required fields/i);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test('should return correct message when user clicks on wrong character', (done) => {
+    userCharacterSelection = {
+      name: 'Bugs',
+      xCoordinate: 99,
+      yCoordinate: 199,
+    };
+    request(app)
+      .post('/validate')
+      .type('form')
+      .send(userCharacterSelection)
+      .then((res) => {
+        expect(res.body.message).toMatch(
+          `Sorry that's not quite ${userCharacterSelection.name}`
         );
         done();
       })
