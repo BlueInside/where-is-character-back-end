@@ -32,7 +32,6 @@ index.post(
     // Find character in DB based on that name
     const character = await Character.findOne({ name: name });
 
-    console.log(character);
     if (!character || character.length === 0)
       return res.status(404).json({ error: 'Character not found' });
 
