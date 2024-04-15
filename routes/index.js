@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const path = require('path');
 const Character = require('../models/Character');
-
 const express = require('express');
 const index = express.Router();
 
