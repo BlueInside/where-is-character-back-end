@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const path = require('path');
 const Character = require('../models/Character');
 
 const express = require('express');
@@ -17,6 +18,11 @@ index.get(
     res.status(200).json({ characters: characters });
   })
 );
+
+index.get('/level1', (req, res) => {
+  const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
+  res.sendFile(imagePath);
+});
 
 index.post(
   '/validate',
