@@ -20,12 +20,14 @@ index.get(
 
 index.get('/level1', (req, res) => {
   const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
+  req.session.startTime = Date.now();
   res.sendFile(imagePath);
 });
 
 index.post(
   '/validate',
   asyncHandler(async (req, res) => {
+    console.log(req.session.startTime);
     // Destruct payload
     const { name, xCoordinate, yCoordinate } = req.body;
 
