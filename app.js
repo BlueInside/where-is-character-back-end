@@ -1,12 +1,14 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-
+const cookieParser = require('cookie-parser');
 // Connect to database
 require('./utils/database');
 
 // Middleware
+app.use(cookieParser());
 app.use(express.static('public'));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
