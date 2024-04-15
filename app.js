@@ -6,6 +6,7 @@ const cors = require('cors');
 require('./utils/database');
 
 // Middleware
+app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
