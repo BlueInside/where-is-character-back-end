@@ -2,13 +2,30 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
 // Connect to database
 require('./utils/database');
 
-// Middleware
-app.use(cookieParser());
-app.use(express.static('public'));
+// Require env variable
+require('dotenv').config();
 
+// Set up session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URL,
+      dbName: 'where_are_characters',
+    }),
+    cookie: { maxAge: 2 * 24 * 3600000 }, // Two days
+  })
+);
+
+// Middleware
+app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
