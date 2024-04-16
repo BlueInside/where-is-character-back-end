@@ -1,9 +1,8 @@
 const asyncHandler = require('express-async-handler');
-
 const express = require('express');
 const index = express.Router();
 const validateCoords = require('../utils/validateCoordinates');
-
+const mockSession = require('./mockSession');
 const mockCharacters = [
   {
     name: 'Bugs',
@@ -22,6 +21,20 @@ const mockCharacters = [
   },
 ];
 
+const mockScores = [
+  {
+    name: 'janes',
+    score: '02:03',
+  },
+  {
+    name: 'blake',
+    score: '01:03',
+  },
+  {
+    name: 'levi',
+    score: '04:03',
+  },
+];
 index.get(
   '/characters',
   asyncHandler(async (req, res) => {
@@ -35,6 +48,25 @@ index.get(
     res.status(200).json({ characters: characters });
   })
 );
+
+index.get('/level1', (req, res) => {
+  mockSession.startTime = Date.now();
+
+  res.status(200).json({});
+});
+
+index.get('/result', (req, res) => {
+  mockSession.finishTime = Date.now();
+
+  mockSession.score = mockSession.startTime - mockSession.finishTime;
+  // gets scores from DB
+  let scores = mockScores;
+
+  // filter scores by the time from shortest to longest
+  let filteredScores = scores.sort(); // REMEMBER js sorts numbers differently
+
+  res.status(200).json({ scores: filteredScores });
+});
 
 index.post(
   '/validate',
