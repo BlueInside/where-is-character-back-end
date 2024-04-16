@@ -2,6 +2,7 @@ const index = require('./index');
 const express = require('express');
 const app = express();
 const request = require('supertest');
+const mockSession = require('./mockSession');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -85,6 +86,44 @@ describe('POST /validate', () => {
         expect(res.body.message).toMatch(
           `Sorry that's not quite ${userCharacterSelection.name}`
         );
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+});
+
+describe('GET /level1', () => {
+  beforeEach(() => {
+    mockSession.reset();
+  });
+  test('Should change add the timeStart to mockSession', (done) => {
+    request(app)
+      .get('/level1')
+      .expect(200)
+      .then(() => {
+        expect(mockSession.startTime).toBeDefined();
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+});
+
+describe('GET /result', () => {
+  beforeEach(() => {
+    mockSession.reset();
+  });
+  test('Should add TimeStop and score to mockSession', (done) => {
+    request(app)
+      .get('/result')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then(() => {
+        expect(mockSession.finishTime).toBeDefined();
+        expect(mockSession.score).toBeDefined();
         done();
       })
       .catch((err) => {
