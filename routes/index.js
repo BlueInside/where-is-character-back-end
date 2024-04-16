@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const path = require('path');
 const Character = require('../models/Character');
+const Score = require('../models/Score');
 const express = require('express');
 const index = express.Router();
 
@@ -21,8 +22,25 @@ index.get(
 index.get('/level1', (req, res) => {
   const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
   req.session.startTime = Date.now();
-  res.sendFile(imagePath);
+  res.status(200).sendFile(imagePath);
 });
+
+index.get(
+  '/results',
+  asyncHandler(async (req, res) => {
+    req.session.finishTime = Date.now();
+    const { startTime, finishTime } = req.session;
+    let userScore = finishTime - startTime;
+    userScore = (userScore / 1000 / 60).toFixed(2); // Writes score in minutes with 2 decimals
+    userScore = Number(userScore); // Makes string back a number
+
+    req.session.score = userScore;
+    // gets scores from DB and sort
+    const scores = await Score.find({}).sort({ score: -1 }).limit(10).exec();
+
+    res.status(200).json({ scores: scores });
+  })
+);
 
 index.post(
   '/validate',
