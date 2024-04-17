@@ -31,7 +31,11 @@ app.use(
       mongoUrl: process.env.MONGODB_URL,
       dbName: 'where_are_characters',
     }),
-    cookie: { maxAge: 2 * 24 * 3600000 }, // Two days
+    cookie: {
+      maxAge: 2 * 24 * 3600000, // Two days
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    },
   })
 );
 
