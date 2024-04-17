@@ -4,6 +4,7 @@ const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const compression = require('compression');
+const RateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const host = process.env.HOST || '127.0.0.1';
 const port = process.env.PORT || 3000;
@@ -13,6 +14,9 @@ require('./utils/database');
 
 // Require env variable
 require('dotenv').config();
+
+// Enable trust for proxy headers
+app.set('trust proxy', 1);
 
 // Set up session
 
@@ -30,10 +34,9 @@ app.use(
 );
 
 // Set up rate limiter: maximum of twenty requests per minute
-const RateLimit = require('express-rate-limit');
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 15,
+  max: 30,
 });
 
 // Middleware
@@ -43,7 +46,7 @@ app.use(helmet());
 app.use(express.static('public'));
 app.use(
   cors({
-    origin: 'https://where-is-character.netlify.app',
+    origin: 'https://where-is-character.netlify.app/',
     credentials: true,
   })
 );
