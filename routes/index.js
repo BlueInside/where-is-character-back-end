@@ -9,7 +9,6 @@ const validateCoords = require('../utils/validateCoordinates');
 const { body, validationResult } = require('express-validator');
 
 index.get('/', (req, res) => {
-  console.log('req');
   return res
     .status(200)
     .json({ message: 'Welcome to the where is character API ' });
