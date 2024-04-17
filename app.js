@@ -43,7 +43,7 @@ app.use(helmet());
 app.use(express.static('public'));
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://where-is-character.netlify.app',
     credentials: true,
   })
 );
