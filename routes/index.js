@@ -29,7 +29,6 @@ index.get(
 index.get('/level1', (req, res) => {
   const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
   req.session.startTime = Date.now();
-  req.session.save();
   return res.status(200).sendFile(imagePath);
 });
 
