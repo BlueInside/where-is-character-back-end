@@ -6,6 +6,7 @@ const express = require('express');
 const index = express.Router();
 const { format } = require('date-fns');
 const validateCoords = require('../utils/validateCoordinates');
+const { body, validationResult } = require('express-validator');
 
 index.get(
   '/characters',
@@ -79,5 +80,36 @@ index.post(
       .json({ message: `That's right thats ${character.name}` });
   })
 );
+
+index.post('/scores', [
+  body('name')
+    .trim()
+    .isLength({ min: 1, max: 7 })
+    .withMessage('Name must be at 1-7 characters long')
+    .escape(),
+
+  asyncHandler(async (req, res) => {
+    // Validate
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+    // Add score to the DB
+    const score = req.session.score;
+
+    if (!score)
+      return res
+        .status(400)
+        .json({ message: 'Sorry there is no recorded score' });
+
+    await Score.create({ name: req.body.name, score: score });
+
+    // Get Updated scoreboard from DB
+    const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
+
+    res.status(200).json({ scores: scores });
+  }),
+]);
 
 module.exports = index;
