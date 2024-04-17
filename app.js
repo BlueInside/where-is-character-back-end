@@ -4,6 +4,9 @@ const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const helmet = require('helmet');
+const host = process.env.HOST || '127.0.0.1';
+const port = process.env.PORT || 3000;
+
 // Connect to database
 require('./utils/database');
 
@@ -40,6 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
-app.listen(3000, () => {
-  console.log('App listening on port 3000');
+app.listen(port, host, () => {
+  console.log('App listening');
 });
