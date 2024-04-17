@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const compression = require('compression');
 const helmet = require('helmet');
 const host = process.env.HOST || '127.0.0.1';
 const port = process.env.PORT || 3000;
@@ -27,7 +28,16 @@ app.use(
   })
 );
 
+// Set up rate limiter: maximum of twenty requests per minute
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+
 // Middleware
+app.use(limiter);
+app.use(compression());
 app.use(helmet());
 app.use(express.static('public'));
 app.use(
