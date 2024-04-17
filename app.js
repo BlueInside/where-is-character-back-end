@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-
+const helmet = require('helmet');
 // Connect to database
 require('./utils/database');
 
@@ -25,6 +25,7 @@ app.use(
 );
 
 // Middleware
+app.use(helmet());
 app.use(express.static('public'));
 app.use(
   cors({
