@@ -17,6 +17,6 @@
   },
   "scripts": {
     "test": "jest --watch",
-    "server": "nodemon app.js"
+    "start": "nodemon app.js"
   }
 }
