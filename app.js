@@ -33,7 +33,7 @@ app.use(
     }),
     cookie: {
       maxAge: 2 * 24 * 3600000, // Two days
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
     },
   })
