@@ -43,16 +43,14 @@ index.get(
     req.session.score = score;
     // gets scores from DB and sort
     const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
-    console.log(score);
 
-    res.status(200).json({ scores: scores });
+    res.status(200).json({ scores: scores, playerScore: score });
   })
 );
 
 index.post(
   '/validate',
   asyncHandler(async (req, res) => {
-    console.log(req.session.startTime);
     // Destruct payload
     const { name, xCoordinate, yCoordinate } = req.body;
 
@@ -103,7 +101,10 @@ index.post('/scores', [
         .status(400)
         .json({ message: 'Sorry there is no recorded score' });
 
-    await Score.create({ name: req.body.name, score: score });
+    const createdScore = await Score.create({
+      name: req.body.name,
+      score: score,
+    });
 
     // Get Updated scoreboard from DB
     const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
