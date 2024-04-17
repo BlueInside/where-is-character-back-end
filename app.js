@@ -32,7 +32,6 @@ app.use(helmet());
 app.use(express.static('public'));
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Replace later with front end
     credentials: true,
   })
 );
