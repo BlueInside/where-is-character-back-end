@@ -131,3 +131,19 @@ describe('GET /result', () => {
       });
   });
 });
+
+describe('POST /scores', () => {
+  const data = { name: 'karol', score: '02:02' };
+  test('Add score to the scoreboard and return updated values', (done) => {
+    request(app)
+      .post('/scores')
+      .type('form')
+      .send(data)
+      .then(() => {
+        request(app)
+          .get('/scores')
+          .expect({ mockScores: [data] }, done);
+      })
+      .catch((err) => done(err));
+  });
+});
