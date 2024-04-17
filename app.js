@@ -15,6 +15,7 @@ require('./utils/database');
 require('dotenv').config();
 
 // Set up session
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
