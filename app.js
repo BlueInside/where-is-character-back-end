@@ -21,7 +21,7 @@ app.set('trust proxy', 1);
 // Middleware
 app.use(express.static('public'));
 // Set up session
-app.use(express.static('public'));
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
