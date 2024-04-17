@@ -23,6 +23,7 @@ app.use(
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URL,
+      dbName: 'where_are_characters',
     }),
     cookie: { maxAge: 2 * 24 * 3600000 }, // Two days
   })
