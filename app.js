@@ -15,12 +15,12 @@ require('./utils/database');
 // Require env variable
 require('dotenv').config();
 
+// Middleware
+
+// Set up session
+
 // Enable trust for proxy headers
 app.set('trust proxy', 1);
-
-// Middleware
-app.use(express.static('public'));
-// Set up session
 
 app.use(
   session({
@@ -46,6 +46,7 @@ const limiter = RateLimit({
 });
 
 // Middleware
+app.use(express.static('public'));
 app.use(limiter);
 app.use(compression());
 app.use(helmet());
