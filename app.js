@@ -18,8 +18,10 @@ require('dotenv').config();
 // Enable trust for proxy headers
 app.set('trust proxy', 1);
 
+// Middleware
+app.use(express.static('public'));
 // Set up session
-
+app.use(express.static('public'));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -43,7 +45,6 @@ const limiter = RateLimit({
 app.use(limiter);
 app.use(compression());
 app.use(helmet());
-app.use(express.static('public'));
 app.use(
   cors({
     origin: ['https://where-is-character.netlify.app', 'http://localhost:5173'],
