@@ -21,20 +21,7 @@ const mockCharacters = [
   },
 ];
 
-const mockScores = [
-  {
-    name: 'janes',
-    score: '02:03',
-  },
-  {
-    name: 'blake',
-    score: '01:03',
-  },
-  {
-    name: 'levi',
-    score: '04:03',
-  },
-];
+const mockScores = [];
 index.get(
   '/characters',
   asyncHandler(async (req, res) => {
@@ -68,9 +55,30 @@ index.get('/result', (req, res) => {
   res.status(200).json({ scores: filteredScores });
 });
 
+index.post('/scores', (req, res) => {
+  // run validation
+  const name = req.body.name;
+
+  // It will be in session
+  const score = req.body.score;
+
+  // Add score to the DB
+  mockScores.push({ name: name, score: score });
+
+  // Get updated scores
+  mockScores;
+  res
+    .status(200)
+    .json({ message: 'Score successfully added', scores: mockScores });
+});
+
+index.get('/scores', (req, res) => {
+  res.json({ mockScores });
+});
+
 index.post(
   '/validate',
-  asyncHandler(async (req, res) => {
+  asyncHandler((req, res) => {
     // Destruct payload
     const { name, xCoordinate, yCoordinate } = req.body;
 
