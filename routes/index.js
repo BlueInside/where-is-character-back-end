@@ -22,14 +22,15 @@ index.get(
     if (!characters || characters.length === 0)
       return res.status(404).json({ error: 'Characters not found' });
 
-    res.status(200).json({ characters: characters });
+    return res.status(200).json({ characters: characters });
   })
 );
 
 index.get('/level1', (req, res) => {
   const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
   req.session.startTime = Date.now();
-  res.status(200).sendFile(imagePath);
+  req.session.save();
+  return res.status(200).sendFile(imagePath);
 });
 
 index.get(
@@ -50,7 +51,7 @@ index.get(
     // gets scores from DB and sort
     const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
 
-    res.status(200).json({ scores: scores, playerScore: score });
+    return res.status(200).json({ scores: scores, playerScore: score });
   })
 );
 
@@ -115,7 +116,7 @@ index.post('/scores', [
     // Get Updated scoreboard from DB
     const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
 
-    res.status(200).json({ scores: scores });
+    return res.status(200).json({ scores: scores });
   }),
 ]);
 
