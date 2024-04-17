@@ -4,7 +4,7 @@ const Character = require('../models/Character');
 const Score = require('../models/Score');
 const express = require('express');
 const index = express.Router();
-
+const { format } = require('date-fns');
 const validateCoords = require('../utils/validateCoordinates');
 
 index.get(
@@ -28,15 +28,21 @@ index.get('/level1', (req, res) => {
 index.get(
   '/results',
   asyncHandler(async (req, res) => {
+    if (!req.session.startTime) {
+      return res
+        .status(400)
+        .json({ message: 'theres was no start time recorder' });
+    }
+
     req.session.finishTime = Date.now();
     const { startTime, finishTime } = req.session;
-    let userScore = finishTime - startTime;
-    userScore = (userScore / 1000 / 60).toFixed(2); // Writes score in minutes with 2 decimals
-    userScore = Number(userScore); // Makes string back a number
+    let score = finishTime - startTime;
+    score = format(score, 'mm:ss');
 
-    req.session.score = userScore;
+    req.session.score = score;
     // gets scores from DB and sort
-    const scores = await Score.find({}).sort({ score: -1 }).limit(10).exec();
+    const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
+    console.log(score);
 
     res.status(200).json({ scores: scores });
   })
