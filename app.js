@@ -5,7 +5,6 @@ const cors = require('cors');
 const compression = require('compression');
 const RateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const host = process.env.HOST || '127.0.0.1';
 const port = process.env.PORT || 3000;
 
 // Connect to database
@@ -67,6 +66,6 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen(port, host, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log('App listening');
 });
