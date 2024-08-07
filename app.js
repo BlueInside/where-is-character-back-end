@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -39,6 +40,32 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  console.error(err);
+
+  // Provide errors only in development
+  const errorDetails =
+    req.app.get('env') === 'development'
+      ? {
+        message: err.message,
+        error: err,
+      }
+      : {};
+
+  res.status(err.status || 500);
+  // Return JSON
+  res.json({
+    message: err.message,
+    ...errorDetails,
+  });
+});
 
 app.listen(port, host, () => {
   console.log('App listening');
