@@ -13,9 +13,6 @@ require('./utils/database');
 // Require env variable
 require('dotenv').config();
 
-// Middleware
-
-
 // Enable trust for proxy headers
 app.set('trust proxy', 1);
 
@@ -26,7 +23,6 @@ const limiter = RateLimit({
   max: 50,
 });
 
-Middleware
 app.use(limiter);
 app.use(
   cors({
