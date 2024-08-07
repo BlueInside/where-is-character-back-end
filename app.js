@@ -42,20 +42,20 @@ app.use(
 // Set up rate limiter: maximum of twenty requests per minute
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 31,
+  max: 50,
 });
 
 // Middleware
-app.use(express.static('public'));
-app.use(limiter);
-app.use(compression());
-app.use(helmet());
+// app.use(limiter);
 app.use(
   cors({
     origin: ['https://where-is-character.netlify.app', 'http://localhost:5173'],
     credentials: true,
   })
 );
+app.use(compression());
+app.use(helmet());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
