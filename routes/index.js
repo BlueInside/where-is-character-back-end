@@ -26,11 +26,10 @@ index.get(
   })
 );
 
-index.get('/level1', (req, res) => {
-  const imagePath = path.join(__dirname, '..', 'public/level1.jpeg');
+index.get('/start', (req, res) => {
   req.session.startTime = Date.now();
-  return res.status(200).sendFile(imagePath);
-});
+  return res.status(200).json({ message: 'Timer started' })
+})
 
 index.get(
   '/results',
@@ -38,7 +37,7 @@ index.get(
     if (!req.session.startTime) {
       return res
         .status(400)
-        .json({ message: 'theres was no start time recorder' });
+        .json({ message: 'theres was no start time recorded' });
     }
 
     req.session.finishTime = Date.now();
