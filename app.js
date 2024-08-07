@@ -26,8 +26,8 @@ const limiter = RateLimit({
   max: 50,
 });
 
-// Middleware
-// app.use(limiter);
+Middleware
+app.use(limiter);
 app.use(
   cors({
     origin: ['https://where-is-character.netlify.app', 'http://localhost:5173'],
