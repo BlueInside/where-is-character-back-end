@@ -30,7 +30,7 @@ Middleware
 app.use(limiter);
 app.use(
   cors({
-    origin: ['https://where-is-character.netlify.app', 'http://localhost:5173'],
+    origin: 'https://where-is-character.netlify.app',
     credentials: true,
   })
 );
