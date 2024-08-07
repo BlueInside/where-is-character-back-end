@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const Game = require('../models/Game');
 const path = require('path');
 const Character = require('../models/Character');
 const Score = require('../models/Score');
@@ -26,30 +27,41 @@ index.get(
   })
 );
 
-index.get('/start', (req, res) => {
-  req.session.startTime = Date.now();
-  return res.status(200).json({ message: 'Timer started' })
+index.get('/start', async (req, res) => {
+  const newGame = new Game({
+    startTime: Date.now(),
+  })
+  try {
+    await newGame.save()
+    res.status(200).json({ message: 'Timer started', gameId: newGame._id });
+  } catch (error) {
+    res.status(500).json({ message: 'Error starting the game' });
+  }
+
 })
 
 index.get(
   '/results',
   asyncHandler(async (req, res) => {
-    if (!req.session.startTime) {
-      return res
-        .status(400)
-        .json({ message: 'theres was no start time recorded' });
+    const gameId = req.query.gameId;
+
+    try {
+      const game = await Game.findById(gameId);
+      if (!game) {
+        return res.status(404).json({ message: 'Game not found' });
+      }
+
+      game.endTime = Date.now();
+      game.duration = game.endTime - game.startTime;
+      await game.save();
+
+      const score = format(game.duration, 'mm:ss');
+      const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
+
+      res.status(200).json({ scores: scores, playerScore: score })
+    } catch (error) {
+      res.status(500).json({ message: 'Error ending the game' });
     }
-
-    req.session.finishTime = Date.now();
-    const { startTime, finishTime } = req.session;
-    let score = finishTime - startTime;
-    score = format(score, 'mm:ss');
-
-    req.session.score = score;
-    // gets scores from DB and sort
-    const scores = await Score.find({}).sort({ score: 1 }).limit(10).exec();
-
-    return res.status(200).json({ scores: scores, playerScore: score });
   })
 );
 
@@ -94,17 +106,21 @@ index.post('/scores', [
   asyncHandler(async (req, res) => {
     // Validate
     const result = validationResult(req);
+    const gameId = req.query.gameId;
 
     if (!result.isEmpty()) {
       return res.status(400).json({ errors: result.array() });
     }
     // Add score to the DB
-    const score = req.session.score;
+    const gameDetails = await Game.findById(gameId)
 
-    if (!score)
+    if (!gameDetails)
       return res
         .status(400)
-        .json({ message: 'Sorry there is no recorded score' });
+        .json({ message: 'Sorry there is no recorded game' });
+
+
+    const score = format(gameDetails.duration, 'mm:ss');
 
     const createdScore = await Score.create({
       name: req.body.name,
